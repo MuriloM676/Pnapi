@@ -1,0 +1,58 @@
+# Docker build context ignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+
+# Virtual envs
+venv/
+env/
+ENV/
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tests and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+site/
+
+# Logs
+*.log
+logs/
+
+# Environments
+.env
+.env.*
+.env.local
+
+# Data
+*.db
+*.sqlite
+*.sqlite3
+
+# Docs builds
+docs/_build/

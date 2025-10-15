@@ -10,49 +10,33 @@ Sistema web para consulta e análise de licitações públicas através da API d
 ---
 
 ## 📋 Índice
+Com os arquivos já presentes no repositório (`Dockerfile`, `docker-compose.yml`, `.dockerignore`, `gunicorn.conf.py`), você pode subir tudo com um único comando.
 
-- [Características](#-características)
-- [Requisitos](#-requisitos)
-- [Instalação](#-instalação)
-- [Configuração](#-configuração)
-- [Como Executar](#-como-executar)
-- [Estrutura do Projeto](#-estrutura-do-projeto)
-- [API Endpoints](#-api-endpoints)
-- [Testes](#-testes)
-- [Deploy](#-deploy)
-- [Contribuindo](#-contribuindo)
+```powershell
+# Windows PowerShell
+$env:SECRET_KEY=(python -c "import secrets; print(secrets.token_hex(32))"); docker compose up --build
+```
 
----
+```bash
+# Linux/Mac (bash)
+export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))")
+docker compose up --build
+```
 
-## ✨ Características
+- App: http://localhost:8000
+- Healthcheck: http://localhost:8000/api/health
 
-- 🔍 **Consulta de Licitações**: Busca licitações abertas com filtros avançados
-- 📊 **Estatísticas**: Visualização de dados agregados e análises
-- 💾 **Cache Redis**: Sistema de cache para melhor performance
-- 🏥 **Health Check**: Monitoramento de saúde da aplicação
-- 🎨 **Interface Responsiva**: Design adaptável para desktop e mobile
-- 📈 **Gráficos Interativos**: Visualizações de dados dinâmicas
-- 🔄 **Proxy API**: Acesso simplificado à API do PNCP
-
----
-
-## 📦 Requisitos
-
-### Obrigatórios
-- **Python 3.8+**
-- **Redis Server** (para cache)
-- **pip** (gerenciador de pacotes Python)
-
-### Opcional
-- **Git** (para clonar o repositório)
-- **virtualenv** (recomendado para ambiente isolado)
-
----
-
-## 🚀 Instalação
-
+Para rodar em segundo plano:
+```powershell
 ### 1. Clone o Repositório
 
+```
+
+Variáveis recomendadas (veja `.env.prod.example`):
+- FLASK_ENV=production
+- SECRET_KEY=chave-forte
+- REDIS_HOST=redis
+- PNCP_API_BASE, CONSULTA_API_BASE (opcionais)
 ```bash
 git clone https://github.com/MuriloM676/Pnapi.git
 cd Pnapi
