@@ -207,6 +207,9 @@ $(document).ready(function() {
         $('#palavraChave').val('');
     });
     
+    // Load initial data when page loads
+    loadOpenTenders();
+    
     function loadOpenTenders() {
         // Show loading indicator
         App.Utils.showLoading('#loading');
