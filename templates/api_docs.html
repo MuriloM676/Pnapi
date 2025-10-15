@@ -50,7 +50,7 @@
                                                 <td><code>dataFinal</code></td>
                                                 <td>string</td>
                                                 <td>Não</td>
-                                                <td>Data final no formato YYYYMMDD</td>
+                                                <td>Data final no formato YYYYMMDD (padrão: data atual)</td>
                                                 <td>20251015</td>
                                             </tr>
                                             <tr>
@@ -143,16 +143,35 @@
                                             <tr>
                                                 <th>Endpoint</th>
                                                 <th>Descrição</th>
+                                                <th>Parâmetros</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td><code>GET /api/estatisticas/modalidades</code></td>
                                                 <td>Estatísticas por modalidade de licitação</td>
+                                                <td>
+                                                    <code>dataInicial</code> (opcional, padrão: 30 dias atrás)<br>
+                                                    <code>dataFinal</code> (opcional, padrão: hoje)<br>
+                                                    <code>uf</code> (opcional)
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td><code>GET /api/estatisticas/uf</code></td>
                                                 <td>Estatísticas por Unidade Federativa</td>
+                                                <td>
+                                                    <code>dataInicial</code> (opcional, padrão: 30 dias atrás)<br>
+                                                    <code>dataFinal</code> (opcional, padrão: hoje)
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/tipo_orgao</code></td>
+                                                <td>Estatísticas por tipo de órgão</td>
+                                                <td>
+                                                    <code>dataInicial</code> (opcional, padrão: 30 dias atrás)<br>
+                                                    <code>dataFinal</code> (opcional, padrão: hoje)<br>
+                                                    <code>uf</code> (opcional)
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -162,11 +181,13 @@
                                 <pre class="bg-light p-3">[
   {
     "modalidade": "Pregão",
+    "codigo": 6,
     "quantidade": 45,
     "valor": 1250000.50
   },
   {
     "modalidade": "Concorrência",
+    "codigo": 1,
     "quantidade": 12,
     "valor": 3200000.75
   }
@@ -218,6 +239,68 @@
                                     <h6><i class="fas fa-exclamation-triangle"></i> Aviso</h6>
                                     <p class="mb-0">Os endpoints proxy fornecem acesso direto às APIs originais do PNCP. Verifique a documentação oficial do PNCP para informações sobre parâmetros e formatos de resposta.</p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tender Details Endpoint -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                <div>
+                                    <span class="badge bg-success me-2">GET</span>
+                                    <strong>/api/licitacoes/&lt;numeroControlePNCP&gt;</strong>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p>Retorna os detalhes de uma licitação específica.</p>
+                                
+                                <h6>Parâmetros:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Parâmetro</th>
+                                                <th>Tipo</th>
+                                                <th>Obrigatório</th>
+                                                <th>Descrição</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><code>numeroControlePNCP</code></td>
+                                                <td>string</td>
+                                                <td>Sim</td>
+                                                <td>Número de controle da licitação no PNCP</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <h6>Exemplo de Uso:</h6>
+                                <pre class="bg-light p-3">GET /api/licitacoes/12345678901234567890</pre>
+                                
+                                <h6>Resposta de Exemplo:</h6>
+                                <pre class="bg-light p-3">{
+  "numeroControlePNCP": "12345678901234567890",
+  "dataPublicacaoPncp": "2025-10-01",
+  "orgaoEntidade": {
+    "cnpj": "12345678901234",
+    "razaoSocial": "Prefeitura Municipal de São Paulo",
+    "ufSigla": "SP"
+  },
+  "itens": [
+    {
+      "numeroItem": 1,
+      "descricao": "Computadores",
+      "quantidade": 10,
+      "valorUnitario": 3000.00,
+      "valorTotal": 30000.00
+    }
+  ]
+}</pre>
                             </div>
                         </div>
                     </div>
