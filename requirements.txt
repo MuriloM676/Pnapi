@@ -1,4 +1,32 @@
-Flask==2.3.3
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+Werkzeug==3.0.1
+
+# HTTP & API
 requests==2.31.0
+urllib3==2.1.0
+
+# Cache & Database
+redis==5.0.1
+
+# Configuração
 python-dotenv==1.0.0
-redis==4.5.4
+
+# Validação e Data
+marshmallow==3.20.1
+python-dateutil==2.8.2
+
+# Logging & Monitoring
+python-json-logger==2.0.7
+
+# Production Server
+gunicorn==21.2.0
+
+# Development & Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-flask==1.3.0
+black==23.12.1
+flake8==6.1.0
+mypy==1.7.1

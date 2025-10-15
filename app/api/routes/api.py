@@ -6,6 +6,7 @@ import requests
 from datetime import datetime, timedelta
 import logging
 from app.extensions import redis_client
+from app.extensions.rate_limiter import rate_limiter
 from app.core.services.pncp_service import PNCPService
 from app.utils.health import HealthChecker
 
@@ -68,8 +69,9 @@ def health_check():
 
 
 @api_bp.route('/licitacoes/abertas')
+@rate_limiter.limit(max_requests=30, window=60)  # 30 requests per minute
 def get_open_tenders():
-    """Get open tenders from PNCP API with Redis caching."""
+    """Get open tenders from PNCP API with Redis caching and rate limiting."""
     try:
         return pncp_service.get_open_tenders(request.args)
     except Exception as e:

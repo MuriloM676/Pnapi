@@ -25,8 +25,13 @@ class PNCPService:
         self.consulta_api_base = current_config.CONSULTA_API_BASE
     
     def get_open_tenders(self, args: Dict[str, Any]) -> Tuple[Any, int]:
-        """Get open tenders from PNCP API with Redis caching."""
+        """Get open tenders from PNCP API with Redis caching and improved error handling."""
         try:
+            # Validate input parameters
+            if not isinstance(args, dict):
+                logger.error("Invalid arguments type - expected dict")
+                return jsonify({"error": "Invalid request parameters"}), 400
+            
             # Get parameters from request
             params = {}
             
@@ -34,8 +39,12 @@ class PNCPService:
             data_final = args.get('dataFinal', datetime.now().strftime('%Y%m%d'))
             # If the date is in YYYY-MM-DD format, convert it
             if '-' in data_final:
-                date_obj = datetime.strptime(data_final, '%Y-%m-%d')
-                data_final = date_obj.strftime('%Y%m%d')
+                try:
+                    date_obj = datetime.strptime(data_final, '%Y-%m-%d')
+                    data_final = date_obj.strftime('%Y%m%d')
+                except ValueError as e:
+                    logger.error(f"Invalid date format: {data_final}")
+                    return jsonify({"error": "Invalid date format. Use YYYY-MM-DD or YYYYMMDD"}), 400
             params['dataFinal'] = data_final
             
             # Add other filters if provided
@@ -45,18 +54,30 @@ class PNCPService:
                 
             uf = args.get('uf')
             if uf:
-                params['uf'] = uf
+                # Validate UF format (2 letters)
+                if not isinstance(uf, str) or len(uf) != 2:
+                    return jsonify({"error": "Invalid UF format. Use 2-letter state code (e.g., SP)"}), 400
+                params['uf'] = uf.upper()
                 
             palavraChave = args.get('palavraChave')
             if palavraChave:
                 params['palavraChave'] = palavraChave
                 
             pagina = args.get('pagina', 1)
+            try:
+                pagina = int(pagina)
+                if pagina < 1:
+                    pagina = 1
+            except (ValueError, TypeError):
+                pagina = 1
             params['pagina'] = pagina
             
             # Ensure tamanhoPagina is at least 10 (API requirement)
             tamanhoPagina = args.get('tamanhoPagina', 10)
-            tamanhoPagina = max(int(tamanhoPagina), 10)
+            try:
+                tamanhoPagina = max(int(tamanhoPagina), 10)
+            except (ValueError, TypeError):
+                tamanhoPagina = 10
             params['tamanhoPagina'] = tamanhoPagina
             
             # Log the parameters being sent
@@ -79,27 +100,49 @@ class PNCPService:
             
             # Check if response is successful
             if response.status_code != 200:
-                logger.error(f"API request failed with status {response.status_code}: {response.text}")
-                return jsonify({"error": f"API request failed with status {response.status_code}"}), response.status_code
+                logger.error(f"API request failed with status {response.status_code}: {response.text[:200]}")
+                
+                # Return appropriate error messages
+                if response.status_code == 400:
+                    return jsonify({"error": "Invalid request parameters"}), 400
+                elif response.status_code == 404:
+                    return jsonify({"error": "Endpoint not found"}), 404
+                elif response.status_code >= 500:
+                    return jsonify({"error": "PNCP API service temporarily unavailable"}), 503
+                else:
+                    return jsonify({"error": f"API request failed with status {response.status_code}"}), response.status_code
             
             # Get JSON data
             try:
                 data = response.json()
                 logger.info(f"Received data with {len(data.get('data', []))} records")
-            except Exception as e:
+            except ValueError as e:
                 logger.error(f"Failed to parse JSON response: {e}")
                 logger.error(f"Response content: {response.text[:500]}")
-                return jsonify({"error": "Failed to parse API response"}), 500
+                return jsonify({"error": "Invalid response from PNCP API"}), 500
+            
+            # Validate response structure
+            if not isinstance(data, dict):
+                logger.error(f"Unexpected response type: {type(data)}")
+                return jsonify({"error": "Unexpected response format from PNCP API"}), 500
             
             # Cache the result for 10 minutes (600 seconds)
             redis_client.set(cache_key, data, 600)
             
             return jsonify(data), 200
-        except requests.exceptions.Timeout:
-            return jsonify({"error": "Request timeout"}), 504
+            
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Connection error to PNCP API: {e}")
+            return jsonify({"error": "Unable to connect to PNCP API"}), 503
+        except requests.exceptions.Timeout as e:
+            logger.error(f"Timeout connecting to PNCP API: {e}")
+            return jsonify({"error": "Request timeout - PNCP API took too long to respond"}), 504
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Request error: {e}")
+            return jsonify({"error": "Error communicating with PNCP API"}), 500
         except Exception as e:
-            logger.error(f"Error in get_open_tenders: {str(e)}")
-            return jsonify({"error": str(e)}), 500
+            logger.exception(f"Unexpected error in get_open_tenders: {str(e)}")
+            return jsonify({"error": "Internal server error"}), 500
     
     def get_tender_details(self, numeroControlePNCP: str) -> Tuple[Any, int]:
         """Get details for a specific tender."""
