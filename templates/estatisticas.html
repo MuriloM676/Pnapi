@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Estatísticas - PNCP API Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1><i class="fas fa-chart-bar"></i> Estatísticas de Licitações</h1>
+        <p class="lead">Visualize estatísticas e dados agregados sobre licitações públicas.</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-chart-pie"></i> Por Modalidade</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="modalidadeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-map"></i> Por Estado (UF)</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ufChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-table"></i> Dados Detalhados</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="statsTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="modalidade-tab" data-bs-toggle="tab" data-bs-target="#modalidade" type="button" role="tab">Por Modalidade</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="uf-tab" data-bs-toggle="tab" data-bs-target="#uf" type="button" role="tab">Por Estado</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="statsTabContent">
+                    <div class="tab-pane fade show active" id="modalidade" role="tabpanel">
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Modalidade</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total (R$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalidadeTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <div class="spinner-border" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="uf" role="tabpanel">
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Estado (UF)</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total (R$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ufTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <div class="spinner-border" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function() {
+    // Load statistics data
+    loadModalidadeStats();
+    loadUfStats();
+    
+    function loadModalidadeStats() {
+        $.get('/api/estatisticas/modalidades')
+            .done(function(data) {
+                displayModalidadeTable(data);
+                createModalidadeChart(data);
+            })
+            .fail(function(xhr) {
+                $('#modalidadeTableBody').html('<tr><td colspan="3" class="text-danger">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
+            });
+    }
+    
+    function loadUfStats() {
+        $.get('/api/estatisticas/uf')
+            .done(function(data) {
+                displayUfTable(data);
+                createUfChart(data);
+            })
+            .fail(function(xhr) {
+                $('#ufTableBody').html('<tr><td colspan="3" class="text-danger">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
+            });
+    }
+    
+    function displayModalidadeTable(data) {
+        let tableHtml = '';
+        data.forEach(function(item) {
+            tableHtml += `
+                <tr>
+                    <td>${item.modalidade}</td>
+                    <td>${item.quantidade}</td>
+                    <td>R$ ${formatCurrency(item.valor)}</td>
+                </tr>
+            `;
+        });
+        $('#modalidadeTableBody').html(tableHtml);
+    }
+    
+    function displayUfTable(data) {
+        let tableHtml = '';
+        data.forEach(function(item) {
+            tableHtml += `
+                <tr>
+                    <td>${item.uf}</td>
+                    <td>${item.quantidade}</td>
+                    <td>R$ ${formatCurrency(item.valor)}</td>
+                </tr>
+            `;
+        });
+        $('#ufTableBody').html(tableHtml);
+    }
+    
+    function createModalidadeChart(data) {
+        const ctx = document.getElementById('modalidadeChart').getContext('2d');
+        const labels = data.map(item => item.modalidade);
+        const quantities = data.map(item => item.quantidade);
+        const values = data.map(item => item.valor);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Licitações',
+                    data: quantities,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    function createUfChart(data) {
+        const ctx = document.getElementById('ufChart').getContext('2d');
+        const labels = data.map(item => item.uf);
+        const quantities = data.map(item => item.quantidade);
+        const values = data.map(item => item.valor);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Licitações',
+                    data: quantities,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    function formatCurrency(value) {
+        return parseFloat(value).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+});
+</script>
+{% endblock %}

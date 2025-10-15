@@ -5,12 +5,12 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <h1>Licitações em Aberto</h1>
-        <p>Visualize e filtre licitações públicas atualmente em aberto.</p>
+        <h1><i class="fas fa-gavel"></i> Licitações em Aberto</h1>
+        <p class="lead">Visualize e filtre licitações públicas atualmente em aberto.</p>
         
         <div class="card mt-4">
-            <div class="card-header">
-                <h5>Filtros</h5>
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-filter"></i> Filtros</h5>
             </div>
             <div class="card-body">
                 <form id="filterForm">
@@ -105,13 +105,13 @@
         </div>
         
         <div class="card mt-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Resultados</h5>
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-list"></i> Resultados</h5>
                 <div>
-                    <button id="refreshBtn" class="btn btn-sm btn-outline-primary">
+                    <button id="refreshBtn" class="btn btn-sm btn-light">
                         <i class="fas fa-sync-alt"></i> Atualizar
                     </button>
-                    <div id="loading" class="spinner-border text-primary d-none" role="status">
+                    <div id="loading" class="spinner-border text-light d-none" role="status" style="width: 1rem; height: 1rem;">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
                 </div>
@@ -120,6 +120,28 @@
                 <div id="resultsTable">
                     <p class="text-muted">Carregando licitações em aberto...</p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for tender details -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Detalhes da Licitação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
@@ -219,14 +241,16 @@ $(document).ready(function() {
         data.data.forEach(function(tender) {
             tableHtml += `
                 <tr>
-                    <td>${tender.numeroCompra || 'N/A'}</td>
                     <td>
-                        <small>${tender.orgaoEntidade ? tender.orgaoEntidade.razaoSocial : 'N/A'}</small>
-                        <div><span class="badge bg-secondary">${tender.orgaoEntidade ? tender.orgaoEntidade.ufSigla : ''}</span></div>
+                        <small>${tender.numeroCompra || 'N/A'}</small>
+                        <div><span class="badge bg-secondary">${tender.processo || ''}</span></div>
                     </td>
                     <td>
-                        <small>${tender.objetoCompra || 'N/A'}</small>
-                        <div><span class="badge bg-info">${tender.processo || ''}</span></div>
+                        <small>${tender.orgaoEntidade ? tender.orgaoEntidade.razaoSocial : 'N/A'}</small>
+                        <div><span class="badge bg-info">${tender.orgaoEntidade ? tender.orgaoEntidade.ufSigla : ''}</span></div>
+                    </td>
+                    <td>
+                        <small>${tender.objetoCompra ? (tender.objetoCompra.length > 100 ? tender.objetoCompra.substring(0, 100) + '...' : tender.objetoCompra) : 'N/A'}</small>
                     </td>
                     <td>
                         <span class="badge bg-primary">${tender.modalidadeNome || getModalidadeName(tender.modalidadeId) || 'N/A'}</span>
@@ -236,7 +260,7 @@ $(document).ready(function() {
                     <td>${formatDate(tender.dataEncerramentoProposta || '')}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" onclick="showDetails('${tender.numeroControlePNCP}')">
-                            <i class="fas fa-info-circle"></i>
+                            <i class="fas fa-info-circle"></i> Detalhes
                         </button>
                     </td>
                 </tr>
@@ -298,10 +322,34 @@ $(document).ready(function() {
         loadOpenTenders();
     };
     
-    // Function to show details (placeholder for now)
+    // Function to show details in modal
     window.showDetails = function(id) {
-        alert('Detalhes da licitação: ' + id);
-        // In a real implementation, this would show a modal with more details
+        // Show modal with loading indicator
+        $('#detailsModal').modal('show');
+        $('#modalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>');
+        
+        // In a real implementation, this would fetch and display detailed information
+        setTimeout(function() {
+            $('#modalBody').html(`
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Informações Básicas</h5>
+                        <table class="table table-bordered">
+                            <tr><th>Número de Controle PNCP</th><td>${id}</td></tr>
+                            <tr><th>Link para PNCP</th><td><a href="https://pncp.gov.br/app/editais/${id}" target="_blank">Visualizar no PNCP</a></td></tr>
+                        </table>
+                        
+                        <h5>Informações Adicionais</h5>
+                        <p>Para obter informações detalhadas sobre esta licitação, acesse diretamente o Portal Nacional de Contratações Públicas usando o link acima.</p>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Nota</h6>
+                            <p>Esta implementação demonstra a funcionalidade de visualização de detalhes. Em uma implementação completa, os dados reais seriam carregados através da API do PNCP.</p>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }, 1000);
     };
     
     // Helper functions

@@ -29,6 +29,14 @@ def consulta_page():
 def licitacoes_page():
     return render_template('licitacoes.html')
 
+@app.route('/estatisticas')
+def estatisticas_page():
+    return render_template('estatisticas.html')
+
+@app.route('/api_docs')
+def api_docs_page():
+    return render_template('api_docs.html')
+
 @app.route('/api/pncp/<path:endpoint>')
 def proxy_pncp_api(endpoint):
     """Proxy endpoint to query PNCP API"""
@@ -109,6 +117,42 @@ def get_tender_details(numeroControlePNCP):
             "numeroControlePNCP": numeroControlePNCP,
             "detalhes": "Detalhes da licitação (implementação futura)"
         }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Endpoint to get statistics
+@app.route('/api/estatisticas/modalidades')
+def get_modalidade_stats():
+    """Get statistics by modality"""
+    try:
+        # This is a placeholder - in a real implementation, we would call the API
+        # to get actual statistics
+        stats = [
+            {"modalidade": "Pregão", "quantidade": 45, "valor": 1250000.50},
+            {"modalidade": "Concorrência", "quantidade": 12, "valor": 3200000.75},
+            {"modalidade": "Tomada de Preços", "quantidade": 8, "valor": 850000.25},
+            {"modalidade": "Credenciamento", "quantidade": 22, "valor": 1950000.00},
+            {"modalidade": "Dispensa de Licitação", "quantidade": 67, "valor": 4200000.30}
+        ]
+        return jsonify(stats), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Endpoint to get statistics by UF
+@app.route('/api/estatisticas/uf')
+def get_uf_stats():
+    """Get statistics by UF"""
+    try:
+        # This is a placeholder - in a real implementation, we would call the API
+        # to get actual statistics
+        stats = [
+            {"uf": "SP", "quantidade": 89, "valor": 7800000.50},
+            {"uf": "RJ", "quantidade": 45, "valor": 3200000.75},
+            {"uf": "MG", "quantidade": 67, "valor": 4500000.25},
+            {"uf": "RS", "quantidade": 34, "valor": 2100000.00},
+            {"uf": "PR", "quantidade": 28, "valor": 1800000.30}
+        ]
+        return jsonify(stats), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

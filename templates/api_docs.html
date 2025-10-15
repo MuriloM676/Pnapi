@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - PNCP API Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1><i class="fas fa-book"></i> Documentação da API</h1>
+        <p class="lead">Documentação dos endpoints disponíveis neste cliente PNCP.</p>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-code"></i> Endpoints Principais</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="apiDocsAccordion">
+                    <!-- Open Tenders Endpoint -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                <strong>GET /api/licitacoes/abertas</strong> - Licitações em Aberto
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p>Retorna as licitações com recebimento de propostas em aberto.</p>
+                                
+                                <h6>Parâmetros de Query:</h6>
+                                <ul>
+                                    <li><code>dataFinal</code> (opcional) - Data final no formato YYYYMMDD (padrão: data atual)</li>
+                                    <li><code>codigoModalidadeContratacao</code> (opcional) - Código da modalidade de contratação</li>
+                                    <li><code>uf</code> (opcional) - Unidade Federativa (ex: SP, RJ, MG)</li>
+                                    <li><code>palavraChave</code> (opcional) - Palavra-chave para busca no objeto da licitação</li>
+                                    <li><code>pagina</code> (opcional) - Número da página (padrão: 1)</li>
+                                    <li><code>tamanhoPagina</code> (opcional) - Tamanho da página, mínimo 10 (padrão: 10)</li>
+                                </ul>
+                                
+                                <h6>Exemplo de Uso:</h6>
+                                <pre>GET /api/licitacoes/abertas?uf=SP&codigoModalidadeContratacao=6&pagina=1&tamanhoPagina=20</pre>
+                                
+                                <h6>Resposta de Exemplo:</h6>
+                                <pre>{
+  "data": [...],
+  "totalRegistros": 125,
+  "totalPaginas": 7,
+  "numeroPagina": 1
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics Endpoints -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                <strong>GET /api/estatisticas/*</strong> - Estatísticas
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p>Endpoints para obtenção de estatísticas agregadas.</p>
+                                
+                                <h6>Endpoints Disponíveis:</h6>
+                                <ul>
+                                    <li><code>GET /api/estatisticas/modalidades</code> - Estatísticas por modalidade de licitação</li>
+                                    <li><code>GET /api/estatisticas/uf</code> - Estatísticas por Unidade Federativa</li>
+                                </ul>
+                                
+                                <h6>Exemplo de Resposta:</h6>
+                                <pre>[
+  {
+    "modalidade": "Pregão",
+    "quantidade": 45,
+    "valor": 1250000.50
+  },
+  {
+    "modalidade": "Concorrência",
+    "quantidade": 12,
+    "valor": 3200000.75
+  }
+]</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proxy Endpoints -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                <strong>Proxy Endpoints</strong> - Acesso às APIs Originais
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p>Endpoints proxy para acesso direto às APIs originais do PNCP.</p>
+                                
+                                <h6>Endpoints Disponíveis:</h6>
+                                <ul>
+                                    <li><code>GET /api/pncp/&lt;path:endpoint&gt;</code> - Acesso à API PNCP principal</li>
+                                    <li><code>GET /api/consulta/&lt;path:endpoint&gt;</code> - Acesso à API de Consultas</li>
+                                </ul>
+                                
+                                <h6>Exemplo de Uso:</h6>
+                                <pre>GET /api/consulta/v1/contratacoes/proposta?dataFinal=20251015&pagina=1&tamanhoPagina=10</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-lightbulb"></i> Exemplos de Integração</h5>
+            </div>
+            <div class="card-body">
+                <h6>Usando JavaScript (Fetch API):</h6>
+                <pre>fetch('/api/licitacoes/abertas?uf=SP&pagina=1&tamanhoPagina=10')
+  .then(response => response.json())
+  .then(data => {
+    console.log('Licitações em aberto:', data);
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+  });</pre>
+                
+                <h6>Usando Python (requests):</h6>
+                <pre>import requests
+
+response = requests.get('http://localhost:5000/api/licitacoes/abertas', 
+                        params={'uf': 'SP', 'pagina': 1, 'tamanhoPagina': 10})
+data = response.json()
+print(data)</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
