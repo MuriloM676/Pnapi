@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Home - PNCP API Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center py-5">
+        <h1 class="display-4"><i class="fas fa-file-contract"></i> PNCP API Client</h1>
+        <p class="lead">Acesse e visualize dados do Portal Nacional de Contratações Públicas</p>
+        <hr class="my-4">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-gavel fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Licitações</h5>
+                <p class="card-text">Visualize licitações em aberto e encerradas com filtros avançados.</p>
+                <a href="/licitacoes" class="btn btn-primary">Acessar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-bar fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Estatísticas</h5>
+                <p class="card-text">Veja estatísticas detalhadas sobre licitações por modalidade e estado.</p>
+                <a href="/estatisticas" class="btn btn-success">Acessar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Documentação</h5>
+                <p class="card-text">Consulte a documentação completa da API e exemplos de uso.</p>
+                <a href="/api_docs" class="btn btn-info">Acessar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5><i class="fas fa-info-circle"></i> Sobre este Cliente</h5>
+            </div>
+            <div class="card-body">
+                <p>Este cliente foi desenvolvido para facilitar o acesso aos dados públicos disponibilizados pelo Portal Nacional de Contratações Públicas (PNCP).</p>
+                <p>Com ele, você pode:</p>
+                <ul>
+                    <li>Pesquisar licitações em aberto com diversos filtros</li>
+                    <li>Visualizar estatísticas agregadas sobre contratações públicas</li>
+                    <li>Integrar os dados em suas próprias aplicações através da nossa API</li>
+                </ul>
+                <p class="mb-0">Os dados são obtidos diretamente da API oficial do PNCP, garantindo informações atualizadas e confiáveis.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

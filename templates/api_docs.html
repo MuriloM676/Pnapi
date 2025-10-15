@@ -8,6 +8,11 @@
         <h1><i class="fas fa-book"></i> Documentação da API</h1>
         <p class="lead">Documentação dos endpoints disponíveis neste cliente PNCP.</p>
         
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> Sobre esta Documentação</h5>
+            <p class="mb-0">Esta documentação descreve os endpoints disponíveis neste cliente para acesso aos dados do Portal Nacional de Contratações Públicas (PNCP). Todos os endpoints retornam dados no formato JSON.</p>
+        </div>
+        
         <div class="card mt-4">
             <div class="card-header bg-primary text-white">
                 <h5><i class="fas fa-code"></i> Endpoints Principais</h5>
@@ -18,7 +23,10 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                                <strong>GET /api/licitacoes/abertas</strong> - Licitações em Aberto
+                                <div>
+                                    <span class="badge bg-success me-2">GET</span>
+                                    <strong>/api/licitacoes/abertas</strong>
+                                </div>
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#apiDocsAccordion">
@@ -26,21 +34,86 @@
                                 <p>Retorna as licitações com recebimento de propostas em aberto.</p>
                                 
                                 <h6>Parâmetros de Query:</h6>
-                                <ul>
-                                    <li><code>dataFinal</code> (opcional) - Data final no formato YYYYMMDD (padrão: data atual)</li>
-                                    <li><code>codigoModalidadeContratacao</code> (opcional) - Código da modalidade de contratação</li>
-                                    <li><code>uf</code> (opcional) - Unidade Federativa (ex: SP, RJ, MG)</li>
-                                    <li><code>palavraChave</code> (opcional) - Palavra-chave para busca no objeto da licitação</li>
-                                    <li><code>pagina</code> (opcional) - Número da página (padrão: 1)</li>
-                                    <li><code>tamanhoPagina</code> (opcional) - Tamanho da página, mínimo 10 (padrão: 10)</li>
-                                </ul>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Parâmetro</th>
+                                                <th>Tipo</th>
+                                                <th>Obrigatório</th>
+                                                <th>Descrição</th>
+                                                <th>Exemplo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><code>dataFinal</code></td>
+                                                <td>string</td>
+                                                <td>Não</td>
+                                                <td>Data final no formato YYYYMMDD</td>
+                                                <td>20251015</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>codigoModalidadeContratacao</code></td>
+                                                <td>integer</td>
+                                                <td>Não</td>
+                                                <td>Código da modalidade de contratação</td>
+                                                <td>6 (Pregão)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>uf</code></td>
+                                                <td>string</td>
+                                                <td>Não</td>
+                                                <td>Sigla da Unidade Federativa</td>
+                                                <td>SP, RJ, MG</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>palavraChave</code></td>
+                                                <td>string</td>
+                                                <td>Não</td>
+                                                <td>Palavra-chave para busca no objeto da licitação</td>
+                                                <td>computador</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>pagina</code></td>
+                                                <td>integer</td>
+                                                <td>Não</td>
+                                                <td>Número da página</td>
+                                                <td>1</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>tamanhoPagina</code></td>
+                                                <td>integer</td>
+                                                <td>Não</td>
+                                                <td>Tamanho da página, mínimo 10</td>
+                                                <td>20</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 
                                 <h6>Exemplo de Uso:</h6>
-                                <pre>GET /api/licitacoes/abertas?uf=SP&codigoModalidadeContratacao=6&pagina=1&tamanhoPagina=20</pre>
+                                <pre class="bg-light p-3">GET /api/licitacoes/abertas?uf=SP&codigoModalidadeContratacao=6&pagina=1&tamanhoPagina=20</pre>
                                 
                                 <h6>Resposta de Exemplo:</h6>
-                                <pre>{
-  "data": [...],
+                                <pre class="bg-light p-3">{
+  "data": [
+    {
+      "numeroCompra": "123456",
+      "processo": "123456/2025",
+      "orgaoEntidade": {
+        "razaoSocial": "Prefeitura Municipal de São Paulo",
+        "ufSigla": "SP"
+      },
+      "objetoCompra": "Aquisição de equipamentos de informática",
+      "modalidadeNome": "Pregão",
+      "modalidadeId": 6,
+      "valorTotalEstimado": 50000.00,
+      "dataAberturaProposta": "20251020",
+      "dataEncerramentoProposta": "20251025",
+      "numeroControlePNCP": "12345678901234567890"
+    }
+  ],
   "totalRegistros": 125,
   "totalPaginas": 7,
   "numeroPagina": 1
@@ -53,7 +126,10 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                                <strong>GET /api/estatisticas/*</strong> - Estatísticas
+                                <div>
+                                    <span class="badge bg-info me-2">GET</span>
+                                    <strong>/api/estatisticas/*</strong>
+                                </div>
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
@@ -61,13 +137,29 @@
                                 <p>Endpoints para obtenção de estatísticas agregadas.</p>
                                 
                                 <h6>Endpoints Disponíveis:</h6>
-                                <ul>
-                                    <li><code>GET /api/estatisticas/modalidades</code> - Estatísticas por modalidade de licitação</li>
-                                    <li><code>GET /api/estatisticas/uf</code> - Estatísticas por Unidade Federativa</li>
-                                </ul>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Endpoint</th>
+                                                <th>Descrição</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/modalidades</code></td>
+                                                <td>Estatísticas por modalidade de licitação</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/uf</code></td>
+                                                <td>Estatísticas por Unidade Federativa</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 
                                 <h6>Exemplo de Resposta:</h6>
-                                <pre>[
+                                <pre class="bg-light p-3">[
   {
     "modalidade": "Pregão",
     "quantidade": 45,
@@ -87,7 +179,10 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                                <strong>Proxy Endpoints</strong> - Acesso às APIs Originais
+                                <div>
+                                    <span class="badge bg-warning me-2">GET</span>
+                                    <strong>Proxy Endpoints</strong>
+                                </div>
                             </button>
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
@@ -95,13 +190,34 @@
                                 <p>Endpoints proxy para acesso direto às APIs originais do PNCP.</p>
                                 
                                 <h6>Endpoints Disponíveis:</h6>
-                                <ul>
-                                    <li><code>GET /api/pncp/&lt;path:endpoint&gt;</code> - Acesso à API PNCP principal</li>
-                                    <li><code>GET /api/consulta/&lt;path:endpoint&gt;</code> - Acesso à API de Consultas</li>
-                                </ul>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Endpoint</th>
+                                                <th>Descrição</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><code>GET /api/pncp/&lt;path:endpoint&gt;</code></td>
+                                                <td>Acesso à API PNCP principal</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>GET /api/consulta/&lt;path:endpoint&gt;</code></td>
+                                                <td>Acesso à API de Consultas</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 
                                 <h6>Exemplo de Uso:</h6>
-                                <pre>GET /api/consulta/v1/contratacoes/proposta?dataFinal=20251015&pagina=1&tamanhoPagina=10</pre>
+                                <pre class="bg-light p-3">GET /api/consulta/v1/contratacoes/proposta?dataFinal=20251015&pagina=1&tamanhoPagina=10</pre>
+                                
+                                <div class="alert alert-warning mt-3">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Aviso</h6>
+                                    <p class="mb-0">Os endpoints proxy fornecem acesso direto às APIs originais do PNCP. Verifique a documentação oficial do PNCP para informações sobre parâmetros e formatos de resposta.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,27 +226,110 @@
         </div>
         
         <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                <h5><i class="fas fa-lightbulb"></i> Exemplos de Integração</h5>
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-plug"></i> Exemplos de Integração</h5>
             </div>
             <div class="card-body">
-                <h6>Usando JavaScript (Fetch API):</h6>
-                <pre>fetch('/api/licitacoes/abertas?uf=SP&pagina=1&tamanhoPagina=10')
+                <ul class="nav nav-tabs" id="integrationTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="javascript-tab" data-bs-toggle="tab" data-bs-target="#javascript" type="button" role="tab">
+                            <i class="fab fa-js"></i> JavaScript
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="python-tab" data-bs-toggle="tab" data-bs-target="#python" type="button" role="tab">
+                            <i class="fab fa-python"></i> Python
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="curl-tab" data-bs-toggle="tab" data-bs-target="#curl" type="button" role="tab">
+                            <i class="fas fa-terminal"></i> cURL
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" id="integrationTabContent">
+                    <div class="tab-pane fade show active" id="javascript" role="tabpanel">
+                        <h6>Usando JavaScript (Fetch API):</h6>
+                        <pre class="bg-light p-3">fetch('/api/licitacoes/abertas?uf=SP&pagina=1&tamanhoPagina=10')
   .then(response => response.json())
   .then(data => {
     console.log('Licitações em aberto:', data);
+    // Processar os dados aqui
   })
   .catch(error => {
     console.error('Erro:', error);
   });</pre>
-                
-                <h6>Usando Python (requests):</h6>
-                <pre>import requests
+                    </div>
+                    <div class="tab-pane fade" id="python" role="tabpanel">
+                        <h6>Usando Python (requests):</h6>
+                        <pre class="bg-light p-3">import requests
 
 response = requests.get('http://localhost:5000/api/licitacoes/abertas', 
                         params={'uf': 'SP', 'pagina': 1, 'tamanhoPagina': 10})
 data = response.json()
 print(data)</pre>
+                    </div>
+                    <div class="tab-pane fade" id="curl" role="tabpanel">
+                        <h6>Usando cURL:</h6>
+                        <pre class="bg-light p-3">curl "http://localhost:5000/api/licitacoes/abertas?uf=SP&pagina=1&tamanhoPagina=10"</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-question-circle"></i> Códigos de Modalidade</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th>
+                                <th>Modalidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Concorrência</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Tomada de Preços</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Convite</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Concurso</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Leilão</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Pregão</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Dispensa de Licitação</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Inexigibilidade de Licitação</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>Credenciamento</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

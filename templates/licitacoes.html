@@ -9,116 +9,136 @@
         <p class="lead">Visualize e filtre licitações públicas atualmente em aberto.</p>
         
         <div class="card mt-4">
-            <div class="card-header bg-primary text-white">
-                <h5><i class="fas fa-filter"></i> Filtros</h5>
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros Avançados</h5>
+                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
             </div>
-            <div class="card-body">
-                <form id="filterForm">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="uf" class="form-label">UF (Estado):</label>
-                            <select class="form-select" id="uf">
-                                <option value="">Todos</option>
-                                <option value="AC">Acre</option>
-                                <option value="AL">Alagoas</option>
-                                <option value="AP">Amapá</option>
-                                <option value="AM">Amazonas</option>
-                                <option value="BA">Bahia</option>
-                                <option value="CE">Ceará</option>
-                                <option value="DF">Distrito Federal</option>
-                                <option value="ES">Espírito Santo</option>
-                                <option value="GO">Goiás</option>
-                                <option value="MA">Maranhão</option>
-                                <option value="MT">Mato Grosso</option>
-                                <option value="MS">Mato Grosso do Sul</option>
-                                <option value="MG">Minas Gerais</option>
-                                <option value="PA">Pará</option>
-                                <option value="PB">Paraíba</option>
-                                <option value="PR">Paraná</option>
-                                <option value="PE">Pernambuco</option>
-                                <option value="PI">Piauí</option>
-                                <option value="RJ">Rio de Janeiro</option>
-                                <option value="RN">Rio Grande do Norte</option>
-                                <option value="RS">Rio Grande do Sul</option>
-                                <option value="RO">Rondônia</option>
-                                <option value="RR">Roraima</option>
-                                <option value="SC">Santa Catarina</option>
-                                <option value="SP">São Paulo</option>
-                                <option value="SE">Sergipe</option>
-                                <option value="TO">Tocantins</option>
-                            </select>
+            <div class="collapse show" id="filterCollapse">
+                <div class="card-body">
+                    <form id="filterForm">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="uf" class="form-label">UF (Estado):</label>
+                                <select class="form-select" id="uf">
+                                    <option value="">Todos</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="modalidade" class="form-label">Modalidade:</label>
+                                <select class="form-select" id="modalidade">
+                                    <option value="">Todas</option>
+                                    <option value="1">Concorrência</option>
+                                    <option value="2">Tomada de Preços</option>
+                                    <option value="3">Convite</option>
+                                    <option value="4">Concurso</option>
+                                    <option value="5">Leilão</option>
+                                    <option value="6">Pregão</option>
+                                    <option value="12">Credenciamento</option>
+                                    <option value="7">Dispensa de Licitação</option>
+                                    <option value="8">Inexigibilidade de Licitação</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="palavraChave" class="form-label">Palavra-chave:</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="palavraChave" placeholder="Buscar no objeto da licitação">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearKeyword">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="col-md-4 mb-3">
-                            <label for="modalidade" class="form-label">Modalidade:</label>
-                            <select class="form-select" id="modalidade">
-                                <option value="">Todas</option>
-                                <option value="1">Concorrência</option>
-                                <option value="2">Tomada de Preços</option>
-                                <option value="3">Convite</option>
-                                <option value="4">Concurso</option>
-                                <option value="5">Leilão</option>
-                                <option value="6">Pregão</option>
-                                <option value="12">Credenciamento</option>
-                                <option value="7">Dispensa de Licitação</option>
-                                <option value="8">Inexigibilidade de Licitação</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="dataFinal" class="form-label">Data Final:</label>
+                                <input type="date" class="form-control" id="dataFinal">
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="pagina" class="form-label">Página:</label>
+                                <input type="number" class="form-control" id="pagina" value="1" min="1">
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="tamanhoPagina" class="form-label">Resultados por página:</label>
+                                <select class="form-select" id="tamanhoPagina">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                         </div>
                         
-                        <div class="col-md-4 mb-3">
-                            <label for="palavraChave" class="form-label">Palavra-chave:</label>
-                            <input type="text" class="form-control" id="palavraChave" placeholder="Buscar no objeto da licitação">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" id="clearFilters" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-eraser"></i> Limpar Filtros
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> Filtrar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="dataFinal" class="form-label">Data Final:</label>
-                            <input type="date" class="form-control" id="dataFinal" value="{{ today }}">
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label for="pagina" class="form-label">Página:</label>
-                            <input type="number" class="form-control" id="pagina" value="1" min="1">
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label for="tamanhoPagina" class="form-label">Resultados por página:</label>
-                            <select class="form-select" id="tamanhoPagina">
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="50">50</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search"></i> Filtrar
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
         
         <div class="card mt-4">
             <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-list"></i> Resultados</h5>
+                <h5 class="mb-0"><i class="fas fa-list"></i> Resultados</h5>
                 <div>
-                    <button id="refreshBtn" class="btn btn-sm btn-light">
+                    <button id="refreshBtn" class="btn btn-sm btn-light me-2">
                         <i class="fas fa-sync-alt"></i> Atualizar
                     </button>
-                    <div id="loading" class="spinner-border text-light d-none" role="status" style="width: 1rem; height: 1rem;">
+                    <div id="loading" class="spinner-border spinner-border-sm text-light d-none" role="status">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
+                    <span id="resultCount" class="badge bg-light text-dark">0 resultados</span>
                 </div>
             </div>
             <div class="card-body">
                 <div id="resultsTable">
-                    <p class="text-muted">Carregando licitações em aberto...</p>
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Use os filtros acima para buscar licitações em aberto</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,10 +154,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modalBody">
-                <div class="text-center">
-                    <div class="spinner-border" role="status">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
+                    <p class="mt-2">Carregando detalhes da licitação...</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -155,9 +176,6 @@ $(document).ready(function() {
     const today = new Date().toISOString().split('T')[0];
     $('#dataFinal').val(today);
     
-    // Load initial data
-    loadOpenTenders();
-    
     // Form submission
     $('#filterForm').on('submit', function(e) {
         e.preventDefault();
@@ -170,10 +188,36 @@ $(document).ready(function() {
         loadOpenTenders();
     });
     
+    // Clear filters button
+    $('#clearFilters').on('click', function() {
+        $('#filterForm')[0].reset();
+        $('#dataFinal').val(today);
+        $('#pagina').val(1);
+        $('#resultsTable').html(`
+            <div class="text-center py-5">
+                <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Use os filtros acima para buscar licitações em aberto</p>
+            </div>
+        `);
+        $('#resultCount').text('0 resultados');
+    });
+    
+    // Clear keyword button
+    $('#clearKeyword').on('click', function() {
+        $('#palavraChave').val('');
+    });
+    
     function loadOpenTenders() {
         // Show loading indicator
-        $('#loading').removeClass('d-none');
-        $('#resultsTable').html('<p class="text-muted">Carregando resultados...</p>');
+        App.Utils.showLoading('#loading');
+        $('#resultsTable').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Buscando licitações em aberto...</p>
+            </div>
+        `);
         
         // Get filter values
         const filters = {};
@@ -200,23 +244,45 @@ $(document).ready(function() {
         if (tamanhoPagina) filters.tamanhoPagina = tamanhoPagina;
         
         // Call our API endpoint which proxies to the PNCP API
-        $.get('/api/licitacoes/abertas', filters)
+        App.ApiService.get('/licitacoes/abertas', filters)
             .done(function(data) {
                 displayResults(data);
-                $('#loading').addClass('d-none');
+                App.Utils.hideLoading('#loading');
             })
             .fail(function(xhr) {
-                $('#resultsTable').html('<div class="alert alert-danger">Erro ao carregar dados: ' + xhr.responseText + '</div>');
-                $('#loading').addClass('d-none');
+                $('#resultsTable').html(`
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <div>
+                            <h5 class="alert-heading">Erro ao carregar dados</h5>
+                            <p class="mb-0">Não foi possível carregar as licitações. Tente novamente mais tarde.</p>
+                            <small>Detalhes: ${xhr.responseText}</small>
+                        </div>
+                    </div>
+                `);
+                App.Utils.hideLoading('#loading');
+                $('#resultCount').text('0 resultados');
             });
     }
     
     function displayResults(data) {
         // Check if we have data
         if (!data || !data.data || data.data.length === 0) {
-            $('#resultsTable').html('<div class="alert alert-info">Nenhuma licitação encontrada com os filtros selecionados.</div>');
+            $('#resultsTable').html(`
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="fas fa-info-circle fa-2x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading">Nenhuma licitação encontrada</h5>
+                        <p class="mb-0">Não foram encontradas licitações com os filtros selecionados.</p>
+                    </div>
+                </div>
+            `);
+            $('#resultCount').text('0 resultados');
             return;
         }
+        
+        // Update result count
+        $('#resultCount').text(`${data.totalRegistros || data.data.length} resultados`);
         
         // Build the table
         let tableHtml = `
@@ -231,7 +297,7 @@ $(document).ready(function() {
                             <th>Valor Estimado</th>
                             <th>Data de Abertura</th>
                             <th>Data de Encerramento</th>
-                            <th>Detalhes</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -239,25 +305,30 @@ $(document).ready(function() {
         
         // Add rows for each tender
         data.data.forEach(function(tender) {
+            // Truncate long text
+            const objetoCompra = tender.objetoCompra ? 
+                (tender.objetoCompra.length > 100 ? tender.objetoCompra.substring(0, 100) + '...' : tender.objetoCompra) : 
+                'N/A';
+                
             tableHtml += `
                 <tr>
                     <td>
-                        <small>${tender.numeroCompra || 'N/A'}</small>
+                        <small class="fw-bold">${tender.numeroCompra || 'N/A'}</small>
                         <div><span class="badge bg-secondary">${tender.processo || ''}</span></div>
                     </td>
                     <td>
-                        <small>${tender.orgaoEntidade ? tender.orgaoEntidade.razaoSocial : 'N/A'}</small>
+                        <small class="d-block">${tender.orgaoEntidade ? tender.orgaoEntidade.razaoSocial : 'N/A'}</small>
                         <div><span class="badge bg-info">${tender.orgaoEntidade ? tender.orgaoEntidade.ufSigla : ''}</span></div>
                     </td>
                     <td>
-                        <small>${tender.objetoCompra ? (tender.objetoCompra.length > 100 ? tender.objetoCompra.substring(0, 100) + '...' : tender.objetoCompra) : 'N/A'}</small>
+                        <small class="d-block" title="${tender.objetoCompra || ''}">${objetoCompra}</small>
                     </td>
                     <td>
-                        <span class="badge bg-primary">${tender.modalidadeNome || getModalidadeName(tender.modalidadeId) || 'N/A'}</span>
+                        <span class="badge bg-primary">${tender.modalidadeNome || App.Utils.getModalidadeName(tender.modalidadeId) || 'N/A'}</span>
                     </td>
-                    <td>R$ ${formatCurrency(tender.valorTotalEstimado || 0)}</td>
-                    <td>${formatDate(tender.dataAberturaProposta || '')}</td>
-                    <td>${formatDate(tender.dataEncerramentoProposta || '')}</td>
+                    <td>R$ ${App.Utils.formatCurrency(tender.valorTotalEstimado || 0)}</td>
+                    <td>${App.Utils.formatDate(tender.dataAberturaProposta || '')}</td>
+                    <td>${App.Utils.formatDate(tender.dataEncerramentoProposta || '')}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" onclick="showDetails('${tender.numeroControlePNCP}')">
                             <i class="fas fa-info-circle"></i> Detalhes
@@ -272,9 +343,11 @@ $(document).ready(function() {
                 </table>
             </div>
             <div class="d-flex justify-content-between align-items-center mt-3">
-                <div>Total de registros: ${data.totalRegistros || data.data.length}</div>
+                <div class="text-muted">
+                    Mostrando página ${data.numeroPagina || $('#pagina').val() || 1} de ${data.totalPaginas || 1}
+                </div>
                 <nav>
-                    <ul class="pagination">
+                    <ul class="pagination mb-0">
         `;
         
         // Add pagination controls
@@ -326,72 +399,60 @@ $(document).ready(function() {
     window.showDetails = function(id) {
         // Show modal with loading indicator
         $('#detailsModal').modal('show');
-        $('#modalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>');
+        $('#modalBody').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Carregando detalhes da licitação...</p>
+            </div>
+        `);
         
         // In a real implementation, this would fetch and display detailed information
         setTimeout(function() {
             $('#modalBody').html(`
                 <div class="row">
                     <div class="col-md-12">
-                        <h5>Informações Básicas</h5>
-                        <table class="table table-bordered">
-                            <tr><th>Número de Controle PNCP</th><td>${id}</td></tr>
-                            <tr><th>Link para PNCP</th><td><a href="https://pncp.gov.br/app/editais/${id}" target="_blank">Visualizar no PNCP</a></td></tr>
-                        </table>
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-file-contract"></i> Informações Básicas</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Número de Controle PNCP</th>
+                                        <td>${id}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Link para PNCP</th>
+                                        <td>
+                                            <a href="https://pncp.gov.br/app/editais/${id}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                         
-                        <h5>Informações Adicionais</h5>
-                        <p>Para obter informações detalhadas sobre esta licitação, acesse diretamente o Portal Nacional de Contratações Públicas usando o link acima.</p>
-                        
-                        <div class="alert alert-info">
-                            <h6><i class="fas fa-info-circle"></i> Nota</h6>
-                            <p>Esta implementação demonstra a funcionalidade de visualização de detalhes. Em uma implementação completa, os dados reais seriam carregados através da API do PNCP.</p>
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informações Adicionais</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>Para obter informações detalhadas sobre esta licitação, acesse diretamente o Portal Nacional de Contratações Públicas usando o link acima.</p>
+                                
+                                <div class="alert alert-info mb-0">
+                                    <h6><i class="fas fa-lightbulb"></i> Nota</h6>
+                                    <p class="mb-0">Esta implementação demonstra a funcionalidade de visualização de detalhes. Em uma implementação completa, os dados reais seriam carregados através da API do PNCP.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             `);
         }, 1000);
     };
-    
-    // Helper functions
-    function getModalidadeName(code) {
-        const modalidades = {
-            '1': 'Concorrência',
-            '2': 'Tomada de Preços',
-            '3': 'Convite',
-            '4': 'Concurso',
-            '5': 'Leilão',
-            '6': 'Pregão',
-            '7': 'Dispensa de Licitação',
-            '8': 'Inexigibilidade de Licitação',
-            '12': 'Credenciamento'
-        };
-        return modalidades[code] || code;
-    }
-    
-    function formatCurrency(value) {
-        return parseFloat(value).toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-    
-    function formatDate(dateString) {
-        if (!dateString) return 'N/A';
-        // Handle both date formats that might come from the API
-        let date;
-        if (dateString.includes('T')) {
-            date = new Date(dateString);
-        } else if (dateString.length === 8) {
-            // Assume format is YYYYMMDD
-            const year = dateString.substring(0, 4);
-            const month = dateString.substring(4, 6);
-            const day = dateString.substring(6, 8);
-            date = new Date(year, month - 1, day);
-        } else {
-            return dateString;
-        }
-        return date.toLocaleDateString('pt-BR');
-    }
 });
 </script>
 {% endblock %}
