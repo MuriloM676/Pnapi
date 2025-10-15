@@ -173,6 +173,32 @@
                                                     <code>uf</code> (opcional)
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/contratos</code></td>
+                                                <td>Estatísticas de contratos</td>
+                                                <td>
+                                                    <code>dataInicial</code> (opcional, padrão: 30 dias atrás)<br>
+                                                    <code>dataFinal</code> (opcional, padrão: hoje)<br>
+                                                    <code>uf</code> (opcional)
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/atas</code></td>
+                                                <td>Estatísticas de atas de registro de preços</td>
+                                                <td>
+                                                    <code>dataInicial</code> (opcional, padrão: 30 dias atrás)<br>
+                                                    <code>dataFinal</code> (opcional, padrão: hoje)<br>
+                                                    <code>uf</code> (opcional)
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>GET /api/estatisticas/planos</code></td>
+                                                <td>Estatísticas de planos de contratação</td>
+                                                <td>
+                                                    <code>ano</code> (opcional, padrão: ano atual)<br>
+                                                    <code>uf</code> (opcional)
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -249,7 +275,7 @@
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
                                 <div>
                                     <span class="badge bg-success me-2">GET</span>
-                                    <strong>/api/licitacoes/&lt;numeroControlePNCP&gt;</strong>
+                                    <strong>/api/licitacoes/detalhes/&lt;numeroControlePNCP&gt;</strong>
                                 </div>
                             </button>
                         </h2>
@@ -280,7 +306,7 @@
                                 </div>
                                 
                                 <h6>Exemplo de Uso:</h6>
-                                <pre class="bg-light p-3">GET /api/licitacoes/12345678901234567890</pre>
+                                <pre class="bg-light p-3">GET /api/licitacoes/detalhes/12345678901234567890</pre>
                                 
                                 <h6>Resposta de Exemplo:</h6>
                                 <pre class="bg-light p-3">{

@@ -9,7 +9,7 @@
         <p class="lead">Visualize estatísticas e dados agregados sobre licitações públicas.</p>
         
         <div class="row mt-4">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card h-100">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Por Modalidade</h5>
@@ -18,13 +18,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <canvas id="modalidadeChart" height="250"></canvas>
+                        <canvas id="modalidadeChart" height="200"></canvas>
                         <div id="modalidadeError" class="alert alert-danger d-none mt-3"></div>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card h-100">
                     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-map"></i> Por Estado (UF)</h5>
@@ -33,13 +33,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <canvas id="ufChart" height="250"></canvas>
+                        <canvas id="ufChart" height="200"></canvas>
                         <div id="ufError" class="alert alert-danger d-none mt-3"></div>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card h-100">
                     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-building"></i> Por Tipo de Órgão</h5>
@@ -48,8 +48,23 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <canvas id="tipoOrgaoChart" height="250"></canvas>
+                        <canvas id="tipoOrgaoChart" height="200"></canvas>
                         <div id="tipoOrgaoError" class="alert alert-danger d-none mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-file-contract"></i> Contratos</h5>
+                        <div class="spinner-border spinner-border-sm text-light d-none" id="contratosLoading" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="contratosChart" height="200"></canvas>
+                        <div id="contratosError" class="alert alert-danger d-none mt-3"></div>
                     </div>
                 </div>
             </div>
@@ -74,6 +89,21 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="tipo-orgao-tab" data-bs-toggle="tab" data-bs-target="#tipo-orgao" type="button" role="tab">
                             <i class="fas fa-building"></i> Por Tipo de Órgão
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contratos-tab" data-bs-toggle="tab" data-bs-target="#contratos" type="button" role="tab">
+                            <i class="fas fa-file-signature"></i> Contratos
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="atas-tab" data-bs-toggle="tab" data-bs-target="#atas" type="button" role="tab">
+                            <i class="fas fa-receipt"></i> Atas de Registro
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="planos-tab" data-bs-toggle="tab" data-bs-target="#planos" type="button" role="tab">
+                            <i class="fas fa-clipboard-list"></i> Planos de Contratação
                         </button>
                     </li>
                 </ul>
@@ -165,6 +195,93 @@
                             </table>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="contratos" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="text-muted">Estatísticas detalhadas de contratos</p>
+                            <button class="btn btn-sm btn-outline-warning" id="refreshContratos">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-warning">
+                                    <tr>
+                                        <th>Tipo de Contrato</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total (R$)</th>
+                                        <th>Percentual</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contratosTableBody">
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div class="spinner-border text-warning" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="atas" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="text-muted">Estatísticas detalhadas de atas de registro de preços</p>
+                            <button class="btn btn-sm btn-outline-danger" id="refreshAtas">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-danger">
+                                    <tr>
+                                        <th>Tipo de Ata</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total (R$)</th>
+                                        <th>Percentual</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="atasTableBody">
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div class="spinner-border text-danger" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="planos" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="text-muted">Estatísticas detalhadas de planos de contratação</p>
+                            <button class="btn btn-sm btn-outline-secondary" id="refreshPlanos">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Tipo de Plano</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total (R$)</th>
+                                        <th>Percentual</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="planosTableBody">
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div class="spinner-border text-secondary" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -180,6 +297,9 @@ $(document).ready(function() {
     loadModalidadeStats();
     loadUfStats();
     loadTipoOrgaoStats();
+    loadContratosStats();
+    loadAtasStats();
+    loadPlanosStats();
     
     // Refresh buttons
     $('#refreshModalidade').on('click', function() {
@@ -192,6 +312,18 @@ $(document).ready(function() {
     
     $('#refreshTipoOrgao').on('click', function() {
         loadTipoOrgaoStats();
+    });
+    
+    $('#refreshContratos').on('click', function() {
+        loadContratosStats();
+    });
+    
+    $('#refreshAtas').on('click', function() {
+        loadAtasStats();
+    });
+    
+    $('#refreshPlanos').on('click', function() {
+        loadPlanosStats();
     });
     
     function loadModalidadeStats() {
@@ -245,6 +377,60 @@ $(document).ready(function() {
                 $('#tipoOrgaoTableBody').html('<tr><td colspan="4" class="text-danger text-center">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
                 App.Utils.showError('#tipoOrgaoError', 'Erro ao carregar dados: ' + xhr.responseText);
                 App.Utils.hideLoading('#tipoOrgaoLoading');
+            });
+    }
+    
+    function loadContratosStats() {
+        // Show loading indicator
+        App.Utils.showLoading('#contratosLoading');
+        App.Utils.hideError('#contratosError');
+        
+        App.ApiService.get('/estatisticas/contratos')
+            .done(function(data) {
+                displayContratosTable(data);
+                createContratosChart(data);
+                App.Utils.hideLoading('#contratosLoading');
+            })
+            .fail(function(xhr) {
+                $('#contratosTableBody').html('<tr><td colspan="4" class="text-danger text-center">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
+                App.Utils.showError('#contratosError', 'Erro ao carregar dados: ' + xhr.responseText);
+                App.Utils.hideLoading('#contratosLoading');
+            });
+    }
+    
+    function loadAtasStats() {
+        // Show loading indicator
+        App.Utils.showLoading('#atasLoading');
+        App.Utils.hideError('#atasError');
+        
+        App.ApiService.get('/estatisticas/atas')
+            .done(function(data) {
+                displayAtasTable(data);
+                createAtasChart(data);
+                App.Utils.hideLoading('#atasLoading');
+            })
+            .fail(function(xhr) {
+                $('#atasTableBody').html('<tr><td colspan="4" class="text-danger text-center">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
+                App.Utils.showError('#atasError', 'Erro ao carregar dados: ' + xhr.responseText);
+                App.Utils.hideLoading('#atasLoading');
+            });
+    }
+    
+    function loadPlanosStats() {
+        // Show loading indicator
+        App.Utils.showLoading('#planosLoading');
+        App.Utils.hideError('#planosError');
+        
+        App.ApiService.get('/estatisticas/planos')
+            .done(function(data) {
+                displayPlanosTable(data);
+                createPlanosChart(data);
+                App.Utils.hideLoading('#planosLoading');
+            })
+            .fail(function(xhr) {
+                $('#planosTableBody').html('<tr><td colspan="4" class="text-danger text-center">Erro ao carregar dados: ' + xhr.responseText + '</td></tr>');
+                App.Utils.showError('#planosError', 'Erro ao carregar dados: ' + xhr.responseText);
+                App.Utils.hideLoading('#planosLoading');
             });
     }
     
@@ -324,6 +510,84 @@ $(document).ready(function() {
             `;
         });
         $('#tipoOrgaoTableBody').html(tableHtml);
+    }
+    
+    function displayContratosTable(data) {
+        // Calculate total for percentage
+        const total = data.reduce((sum, item) => sum + (item.valor || 0), 0);
+        
+        let tableHtml = '';
+        data.forEach(function(item) {
+            const percentage = total > 0 ? ((item.valor || 0) / total * 100).toFixed(2) : 0;
+            tableHtml += `
+                <tr>
+                    <td>${item.tipo}</td>
+                    <td>${item.quantidade}</td>
+                    <td>R$ ${App.Utils.formatCurrency(item.valor)}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">${percentage}%</span>
+                            <div class="progress flex-grow-1" style="height: 10px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: ${percentage}%" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        $('#contratosTableBody').html(tableHtml);
+    }
+    
+    function displayAtasTable(data) {
+        // Calculate total for percentage
+        const total = data.reduce((sum, item) => sum + (item.valor || 0), 0);
+        
+        let tableHtml = '';
+        data.forEach(function(item) {
+            const percentage = total > 0 ? ((item.valor || 0) / total * 100).toFixed(2) : 0;
+            tableHtml += `
+                <tr>
+                    <td>${item.tipo}</td>
+                    <td>${item.quantidade}</td>
+                    <td>R$ ${App.Utils.formatCurrency(item.valor)}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">${percentage}%</span>
+                            <div class="progress flex-grow-1" style="height: 10px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: ${percentage}%" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        $('#atasTableBody').html(tableHtml);
+    }
+    
+    function displayPlanosTable(data) {
+        // Calculate total for percentage
+        const total = data.reduce((sum, item) => sum + (item.valor || 0), 0);
+        
+        let tableHtml = '';
+        data.forEach(function(item) {
+            const percentage = total > 0 ? ((item.valor || 0) / total * 100).toFixed(2) : 0;
+            tableHtml += `
+                <tr>
+                    <td>${item.tipo}</td>
+                    <td>${item.quantidade}</td>
+                    <td>R$ ${App.Utils.formatCurrency(item.valor)}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">${percentage}%</span>
+                            <div class="progress flex-grow-1" style="height: 10px;">
+                                <div class="progress-bar bg-secondary" role="progressbar" style="width: ${percentage}%" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        $('#planosTableBody').html(tableHtml);
     }
     
     function createModalidadeChart(data) {
@@ -457,6 +721,123 @@ $(document).ready(function() {
         };
         
         App.ChartService.createBarChart('tipoOrgaoChart', {labels, values}, config);
+    }
+    
+    function createContratosChart(data) {
+        const labels = data.map(item => item.tipo);
+        const values = data.map(item => item.quantidade);
+        
+        const config = {
+            label: 'Quantidade de Contratos',
+            yAxisTitle: 'Quantidade',
+            xAxisTitle: 'Tipo de Contrato',
+            colors: {
+                background: [
+                    'rgba(255, 193, 7, 0.2)',
+                    'rgba(255, 152, 0, 0.2)',
+                    'rgba(255, 87, 34, 0.2)',
+                    'rgba(158, 158, 158, 0.2)'
+                ],
+                border: [
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(255, 152, 0, 1)',
+                    'rgba(255, 87, 34, 1)',
+                    'rgba(158, 158, 158, 1)'
+                ]
+            },
+            tooltipCallbacks: {
+                label: function(context) {
+                    const label = context.dataset.label || '';
+                    const value = context.parsed.y;
+                    return `${label}: ${value}`;
+                },
+                afterLabel: function(context) {
+                    const index = context.dataIndex;
+                    const value = data[index].valor;
+                    return `Valor: R$ ${App.Utils.formatCurrency(value)}`;
+                }
+            }
+        };
+        
+        App.ChartService.createBarChart('contratosChart', {labels, values}, config);
+    }
+    
+    function createAtasChart(data) {
+        const labels = data.map(item => item.tipo);
+        const values = data.map(item => item.quantidade);
+        
+        const config = {
+            label: 'Quantidade de Atas',
+            yAxisTitle: 'Quantidade',
+            xAxisTitle: 'Tipo de Ata',
+            colors: {
+                background: [
+                    'rgba(244, 67, 54, 0.2)',
+                    'rgba(229, 57, 53, 0.2)',
+                    'rgba(211, 47, 47, 0.2)',
+                    'rgba(198, 40, 40, 0.2)'
+                ],
+                border: [
+                    'rgba(244, 67, 54, 1)',
+                    'rgba(229, 57, 53, 1)',
+                    'rgba(211, 47, 47, 1)',
+                    'rgba(198, 40, 40, 1)'
+                ]
+            },
+            tooltipCallbacks: {
+                label: function(context) {
+                    const label = context.dataset.label || '';
+                    const value = context.parsed.y;
+                    return `${label}: ${value}`;
+                },
+                afterLabel: function(context) {
+                    const index = context.dataIndex;
+                    const value = data[index].valor;
+                    return `Valor: R$ ${App.Utils.formatCurrency(value)}`;
+                }
+            }
+        };
+        
+        App.ChartService.createBarChart('atasChart', {labels, values}, config);
+    }
+    
+    function createPlanosChart(data) {
+        const labels = data.map(item => item.tipo);
+        const values = data.map(item => item.quantidade);
+        
+        const config = {
+            label: 'Quantidade de Planos',
+            yAxisTitle: 'Quantidade',
+            xAxisTitle: 'Tipo de Plano',
+            colors: {
+                background: [
+                    'rgba(158, 158, 158, 0.2)',
+                    'rgba(117, 117, 117, 0.2)',
+                    'rgba(97, 97, 97, 0.2)',
+                    'rgba(66, 66, 66, 0.2)'
+                ],
+                border: [
+                    'rgba(158, 158, 158, 1)',
+                    'rgba(117, 117, 117, 1)',
+                    'rgba(97, 97, 97, 1)',
+                    'rgba(66, 66, 66, 1)'
+                ]
+            },
+            tooltipCallbacks: {
+                label: function(context) {
+                    const label = context.dataset.label || '';
+                    const value = context.parsed.y;
+                    return `${label}: ${value}`;
+                },
+                afterLabel: function(context) {
+                    const index = context.dataIndex;
+                    const value = data[index].valor;
+                    return `Valor: R$ ${App.Utils.formatCurrency(value)}`;
+                }
+            }
+        };
+        
+        App.ChartService.createBarChart('planosChart', {labels, values}, config);
     }
 });
 </script>

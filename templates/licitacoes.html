@@ -408,50 +408,251 @@ $(document).ready(function() {
             </div>
         `);
         
-        // In a real implementation, this would fetch and display detailed information
-        setTimeout(function() {
-            $('#modalBody').html(`
-                <div class="row">
-                    <div class="col-md-12">
+        // Fetch real data from our API endpoint
+        App.ApiService.get(`/licitacoes/detalhes/${id}`)
+            .done(function(data) {
+                // Build the detailed view with real data
+                let modalHtml = `
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0"><i class="fas fa-file-contract"></i> Informações Básicas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>Número de Controle PNCP</th>
+                                            <td>${id}</td>
+                                        </tr>
+                `;
+                
+                // Add more details if available
+                if (data.dataPublicacaoPncp) {
+                    modalHtml += `<tr><th>Data de Publicação</th><td>${App.Utils.formatDate(data.dataPublicacaoPncp)}</td></tr>`;
+                }
+                
+                if (data.orgaoEntidade) {
+                    modalHtml += `<tr><th>Órgão</th><td>${data.orgaoEntidade.razaoSocial || 'N/A'} (${data.orgaoEntidade.cnpj || 'N/A'})</td></tr>`;
+                    if (data.orgaoEntidade.ufSigla) {
+                        modalHtml += `<tr><th>UF</th><td>${data.orgaoEntidade.ufSigla}</td></tr>`;
+                    }
+                }
+                
+                if (data.objetoCompra) {
+                    modalHtml += `<tr><th>Objeto da Compra</th><td>${data.objetoCompra}</td></tr>`;
+                }
+                
+                if (data.modalidadeId || data.modalidadeNome) {
+                    modalHtml += `<tr><th>Modalidade</th><td>${data.modalidadeNome || App.Utils.getModalidadeName(data.modalidadeId) || 'N/A'}</td></tr>`;
+                }
+                
+                if (data.valorTotalEstimado) {
+                    modalHtml += `<tr><th>Valor Total Estimado</th><td>R$ ${App.Utils.formatCurrency(data.valorTotalEstimado)}</td></tr>`;
+                }
+                
+                // Function to convert PNCP ID format to URL format
+                function convertPncpIdToUrl(id) {
+                    // Convert from format: 18428888000123-1-000178/2024
+                    // To format: 18428888000123/2024/178
+                    if (id.includes('-') && id.includes('/')) {
+                        try {
+                            const parts = id.split('-');
+                            const cnpj = parts[0];
+                            const sequencial = parts[2].split('/')[0];
+                            const ano = parts[2].split('/')[1];
+                            return `${cnpj}/${ano}/${parseInt(sequencial)}`;
+                        } catch (e) {
+                            console.error("Error converting ID:", e);
+                            return id;
+                        }
+                    }
+                    return id;
+                }
+                
+                const pncpUrl = data.pncp_web_url || convertPncpIdToUrl(id);
+                
+                modalHtml += `
+                                        <tr>
+                                            <th>Link para PNCP</th>
+                                            <td>
+                                                <a href="https://pncp.gov.br/app/editais/${pncpUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                `;
+                
+                // Add items table if available
+                if (data.itens && data.itens.length > 0) {
+                    modalHtml += `
                         <div class="card mb-4">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="fas fa-file-contract"></i> Informações Básicas</h5>
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-list"></i> Itens da Licitação</h5>
                             </div>
                             <div class="card-body">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>Número de Controle PNCP</th>
-                                        <td>${id}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Link para PNCP</th>
-                                        <td>
-                                            <a href="https://pncp.gov.br/app/editais/${id}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="card mb-4">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informações Adicionais</h5>
-                            </div>
-                            <div class="card-body">
-                                <p>Para obter informações detalhadas sobre esta licitação, acesse diretamente o Portal Nacional de Contratações Públicas usando o link acima.</p>
-                                
-                                <div class="alert alert-info mb-0">
-                                    <h6><i class="fas fa-lightbulb"></i> Nota</h6>
-                                    <p class="mb-0">Esta implementação demonstra a funcionalidade de visualização de detalhes. Em uma implementação completa, os dados reais seriam carregados através da API do PNCP.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Número</th>
+                                                <th>Descrição</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor Unitário</th>
+                                                <th>Valor Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                    `;
+                    
+                    data.itens.forEach(function(item) {
+                        modalHtml += `
+                            <tr>
+                                <td>${item.numeroItem || 'N/A'}</td>
+                                <td>${item.descricao || 'N/A'}</td>
+                                <td>${item.quantidade || 'N/A'}</td>
+                                <td>R$ ${App.Utils.formatCurrency(item.valorUnitario || 0)}</td>
+                                <td>R$ ${App.Utils.formatCurrency(item.valorTotal || 0)}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    modalHtml += `
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
+                    `;
+                }
+                
+                // Add events timeline if available
+                if (data.events && data.events.length > 0) {
+                    modalHtml += `
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-timeline"></i> Cronograma</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-info">
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Evento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                    `;
+                    
+                    data.events.forEach(function(event) {
+                        modalHtml += `
+                            <tr>
+                                <td>${App.Utils.formatDate(event.date || 'N/A')}</td>
+                                <td>${event.description || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    modalHtml += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                modalHtml += `
+                        </div>
                     </div>
-                </div>
-            `);
-        }, 1000);
+                `;
+                
+                $('#modalBody').html(modalHtml);
+            })
+            .fail(function(xhr) {
+                // Show error message if the request fails
+                let errorMessage = 'Não foi possível carregar os detalhes da licitação. Tente novamente mais tarde.';
+                let errorDetails = '';
+                let tenderId = id;
+                let showRetryButton = true;
+                let responsePreview = '';
+                
+                try {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    if (errorResponse.error) {
+                        errorMessage = errorResponse.error;
+                        if (errorResponse.message) {
+                            errorDetails = errorResponse.message;
+                        }
+                        if (errorResponse.numeroControlePNCP) {
+                            tenderId = errorResponse.numeroControlePNCP;
+                        }
+                        if (errorResponse.response_preview) {
+                            responsePreview = errorResponse.response_preview;
+                        }
+                        // If it's a "not found" error, don't show retry button
+                        if (errorResponse.error === "Dados não encontrados") {
+                            showRetryButton = false;
+                        }
+                    }
+                } catch (e) {
+                    // If we can't parse the error response, use the default message
+                    errorMessage = 'Erro de conexão com a API do PNCP';
+                    errorDetails = 'Não foi possível obter os dados da licitação. Tente novamente mais tarde.';
+                }
+                
+                // Function to convert PNCP ID format to URL format
+                function convertPncpIdToUrl(id) {
+                    // Convert from format: 18428888000123-1-000178/2024
+                    // To format: 18428888000123/2024/178
+                    if (id.includes('-') && id.includes('/')) {
+                        const parts = id.split('-');
+                        const cnpj = parts[0];
+                        const sequencial = parts[2].split('/')[0];
+                        const ano = parts[2].split('/')[1];
+                        return `${cnpj}/${ano}/${parseInt(sequencial)}`;
+                    }
+                    return id;
+                }
+                
+                let debugInfo = '';
+                if (responsePreview) {
+                    debugInfo = `
+                        <div class="mt-3">
+                            <h6><i class="fas fa-bug"></i> Informações de depuração:</h6>
+                            <pre class="bg-light p-2 small">${responsePreview}</pre>
+                        </div>
+                    `;
+                }
+                
+                // Get PNCP URL from error response or construct it
+                let pncpUrl = tenderId;
+                if (errorResponse.pncp_web_url) {
+                    pncpUrl = errorResponse.pncp_web_url;
+                } else {
+                    pncpUrl = convertPncpIdToUrl(tenderId);
+                }
+                
+                $('#modalBody').html(`
+                    <div class="alert alert-warning" role="alert">
+                        <h5><i class="fas fa-exclamation-triangle"></i> ${errorMessage}</h5>
+                        <p>${errorDetails}</p>
+                        ${errorDetails ? `<small>Detalhes: ${errorDetails}</small>` : ''}
+                        ${debugInfo}
+                        <div class="mt-3">
+                            <p>${errorResponse.suggestion || 'Você pode tentar acessar os detalhes diretamente no Portal Nacional de Contratações Públicas:'}</p>
+                            <a href="${pncpUrl}" target="_blank" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
+                            </a>
+                        </div>
+                        ${retryButtonHtml}
+                    </div>
+                `);
+            });
     };
 });
 </script>
