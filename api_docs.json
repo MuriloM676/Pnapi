@@ -1,0 +1,46 @@
+﻿
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"openapi":"3.0.1","info
+                    ":{"title":"API PNCP","d
+                    escription":"API REST 
+                    de serviÃ§os do Portal 
+                    Nacional de 
+                    ContrataÃ§Ãµes 
+                    PÃºblicas (PNCP)","conta
+                    ct":{"name":"ServiÃ§o 
+                    Federal de 
+                    Processamento de Dados 
+                    ...
+RawContent        : HTTP/1.1 200 OK
+                    access-control-allow-ori
+                    gin: *
+                    access-control-allow-met
+                    hods: GET,PUT,POST,DELET
+                    E,OPTIONS
+                    access-control-allow-cre
+                    dentials: true
+                    access-control-allow-hea
+                    ders: Content-Type,Autho
+                    riza...
+Forms             : {}
+Headers           : {[access-control-allow-o
+                    rigin, *], [access-contr
+                    ol-allow-methods, GET,PU
+                    T,POST,DELETE,OPTIONS], 
+                    [access-control-allow-cr
+                    edentials, true], [acces
+                    s-control-allow-headers,
+                     Content-Type,Authorizat
+                    ion,X-Requested-With,Con
+                    tent-Length,Accept,Origi
+                    n,]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 318513
+
+
+

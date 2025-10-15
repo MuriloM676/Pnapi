@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}PNCP API - PNCP API Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>PNCP API</h1>
+        <p>Consulte a API principal do Portal Nacional de Contratações Públicas.</p>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>Consulta de Dados</h5>
+            </div>
+            <div class="card-body">
+                <form id="pncpForm">
+                    <div class="mb-3">
+                        <label for="endpoint" class="form-label">Endpoint:</label>
+                        <input type="text" class="form-control" id="endpoint" placeholder="Ex: v1/orgaos/{cnpj}/contratos" required>
+                        <div class="form-text">Informe o endpoint da API (sem a URL base)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="params" class="form-label">Parâmetros (JSON):</label>
+                        <textarea class="form-control" id="params" rows="3" placeholder='{"pagina": 1, "tamanhoPagina": 10}'></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Consultar</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>Resultado</h5>
+            </div>
+            <div class="card-body">
+                <pre id="result" style="max-height: 400px; overflow-y: auto;">Clique em "Consultar" para ver os resultados</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#pncpForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const endpoint = $('#endpoint').val();
+        const paramsStr = $('#params').val();
+        
+        let params = {};
+        try {
+            if (paramsStr) {
+                params = JSON.parse(paramsStr);
+            }
+        } catch (e) {
+            alert('Erro ao parsear os parâmetros JSON: ' + e.message);
+            return;
+        }
+        
+        // Convert params to query string
+        const queryString = new URLSearchParams(params).toString();
+        const url = `/api/pncp/${endpoint}${queryString ? '?' + queryString : ''}`;
+        
+        $('#result').text('Carregando...');
+        
+        $.get(url)
+            .done(function(data) {
+                $('#result').text(JSON.stringify(data, null, 2));
+            })
+            .fail(function(xhr) {
+                $('#result').text('Erro: ' + xhr.responseText);
+            });
+    });
+});
+</script>
+{% endblock %}

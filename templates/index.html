@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Home - PNCP API Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-primary text-white p-4 rounded mb-4">
+            <h1 class="display-4"><i class="fas fa-file-contract"></i> PNCP API Client</h1>
+            <p class="lead">Acesse e consulte dados do Portal Nacional de Contratações Públicas</p>
+            <hr class="my-4">
+            <p>Este cliente permite consultar as APIs oficiais do PNCP para acessar informações sobre contratações públicas, licitações e muito mais.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-database text-primary"></i> PNCP API</h5>
+                        <p class="card-text">API principal do PNCP para consulta de contratações públicas, inclusão de dados e gerenciamento de informações.</p>
+                        <a href="/pncp" class="btn btn-primary">Acessar PNCP API</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-search text-primary"></i> Consulta API</h5>
+                        <p class="card-text">API de consultas específicas do PNCP para acesso a dados públicos e relatórios.</p>
+                        <a href="/consulta" class="btn btn-primary">Acessar Consulta API</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-gavel text-primary"></i> Licitações em Aberto</h5>
+                        <p class="card-text">Consulte licitações públicas atualmente em aberto com filtros por região, modalidade e mais.</p>
+                        <a href="/licitacoes" class="btn btn-primary">Ver Licitações em Aberto</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-chart-bar text-primary"></i> Estatísticas</h5>
+                        <p class="card-text">Visualize estatísticas e relatórios sobre contratações públicas por região, período e modalidade.</p>
+                        <a href="#" class="btn btn-secondary disabled">Em breve</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Sobre o PNCP</h5>
+            </div>
+            <div class="card-body">
+                <p>O Portal Nacional de Contratações Públicas (PNCP) é uma plataforma digital que centraliza as informações sobre contratações públicas realizadas por órgãos e entidades da administração pública brasileira.</p>
+                <p>Este cliente facilita o acesso aos dados públicos disponibilizados pelo PNCP através de suas APIs REST.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
