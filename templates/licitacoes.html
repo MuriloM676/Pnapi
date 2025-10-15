@@ -411,7 +411,26 @@ $(document).ready(function() {
         // Fetch real data from our API endpoint
         App.ApiService.get(`/licitacoes/detalhes/${id}`)
             .done(function(data) {
-                // Build the detailed view with real data
+                // Check if we have a special message about unavailable data
+                if (data.status === "unavailable") {
+                    // Show message with link to PNCP website
+                    let pncpUrl = data.pncp_web_url || '#';
+                    $('#modalBody').html(`
+                        <div class="alert alert-info" role="alert">
+                            <h5><i class="fas fa-info-circle"></i> Informação Importante</h5>
+                            <p>${data.message || 'Os detalhes da licitação não estão disponíveis através da API do PNCP neste momento.'}</p>
+                            <p>Você pode acessar os detalhes completos diretamente no Portal Nacional de Contratações Públicas:</p>
+                            <div class="d-grid gap-2">
+                                <a href="${pncpUrl}" target="_blank" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
+                                </a>
+                            </div>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                // Build the detailed view with real data (if available)
                 let modalHtml = `
                     <div class="row">
                         <div class="col-md-12">
@@ -631,7 +650,7 @@ $(document).ready(function() {
                 
                 // Get PNCP URL from error response or construct it
                 let pncpUrl = tenderId;
-                if (errorResponse.pncp_web_url) {
+                if (errorResponse && errorResponse.pncp_web_url) {
                     pncpUrl = errorResponse.pncp_web_url;
                 } else {
                     pncpUrl = convertPncpIdToUrl(tenderId);
@@ -644,12 +663,12 @@ $(document).ready(function() {
                         ${errorDetails ? `<small>Detalhes: ${errorDetails}</small>` : ''}
                         ${debugInfo}
                         <div class="mt-3">
-                            <p>${errorResponse.suggestion || 'Você pode tentar acessar os detalhes diretamente no Portal Nacional de Contratações Públicas:'}</p>
-                            <a href="${pncpUrl}" target="_blank" class="btn btn-primary">
+                            <p>${(errorResponse && errorResponse.suggestion) || 'Você pode tentar acessar os detalhes diretamente no Portal Nacional de Contratações Públicas:'}</p>
+                            <a href="https://pncp.gov.br/app/editais/${pncpUrl}" target="_blank" class="btn btn-primary">
                                 <i class="fas fa-external-link-alt"></i> Visualizar no PNCP
                             </a>
                         </div>
-                        ${retryButtonHtml}
+                        ${retryButtonHtml || ''}
                     </div>
                 `);
             });

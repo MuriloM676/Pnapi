@@ -156,100 +156,16 @@ def get_tender_details(numeroControlePNCP):
                 logger.error(f"Error parsing ID for PNCP web URL: {e}")
                 pncp_web_url = None
         
-        # Try multiple API endpoints to get tender details
-        urls_to_try = [
-            f"{CONSULTA_API_BASE}/v1/contratacoes/{numeroControlePNCP}",
-            f"{PNCP_API_BASE}/v1/contratacoes/{numeroControlePNCP}",
-            f"{PNCP_API_BASE}/contratacoes/{numeroControlePNCP}"
-        ]
+        # Since the API endpoints are not working, we'll return a response with just the web URL
+        # This allows users to access the details directly on the PNCP website
+        response_data = {
+            "numeroControlePNCP": numeroControlePNCP,
+            "pncp_web_url": pncp_web_url,
+            "message": "Os detalhes da licitação não estão disponíveis através da API do PNCP neste momento. Você pode acessar os detalhes diretamente no Portal Nacional de Contratações Públicas usando o botão abaixo.",
+            "status": "unavailable"
+        }
         
-        response = None
-        url_used = None
-        
-        for url in urls_to_try:
-            try:
-                logger.info(f"Trying URL: {url}")
-                response = requests.get(url, timeout=30)
-                url_used = url
-                logger.info(f"Response status: {response.status_code}")
-                
-                # If we get a successful response, break the loop
-                if response.status_code == 200:
-                    break
-            except Exception as e:
-                logger.error(f"Error with URL {url}: {e}")
-                continue
-        
-        # If we don't have a successful response, return an informative error
-        if not response or response.status_code != 200:
-            error_message = "Não foi possível obter os detalhes da licitação através da API do PNCP."
-            if response:
-                error_message += f" Último status code: {response.status_code}"
-            
-            return jsonify({
-                "error": "Dados não disponíveis",
-                "message": error_message,
-                "numeroControlePNCP": numeroControlePNCP,
-                "pncp_web_url": pncp_web_url,
-                "suggestion": "Você pode tentar acessar os detalhes diretamente no Portal Nacional de Contratações Públicas usando o botão abaixo."
-            }), 404
-        
-        # Check if response is empty
-        if not response.content:
-            logger.error(f"Empty response from {url_used}")
-            return jsonify({
-                "error": "Resposta vazia",
-                "message": f"A API do PNCP retornou uma resposta vazia para a licitação {numeroControlePNCP}.",
-                "numeroControlePNCP": numeroControlePNCP,
-                "pncp_web_url": pncp_web_url
-            }), 500
-        
-        # Check if response is valid JSON
-        try:
-            json_data = response.json()
-        except ValueError as json_error:
-            logger.error(f"Invalid JSON response from {url_used}: {str(json_error)}")
-            logger.error(f"Response content: {response.text[:500]}...")  # Log first 500 chars
-            logger.error(f"Response content length: {len(response.text)}")
-            
-            # Check if it's HTML or some other content
-            if response.text.strip().startswith('<'):
-                logger.error("Response appears to be HTML content")
-                return jsonify({
-                    "error": "Conteúdo inválido",
-                    "message": f"A API do PNCP retornou conteúdo HTML inválido para a licitação {numeroControlePNCP}.",
-                    "numeroControlePNCP": numeroControlePNCP,
-                    "pncp_web_url": pncp_web_url
-                }), 500
-            elif len(response.text.strip()) == 0:
-                logger.error("Response is empty string")
-                return jsonify({
-                    "error": "Resposta vazia",
-                    "message": f"A API do PNCP retornou uma resposta vazia para a licitação {numeroControlePNCP}.",
-                    "numeroControlePNCP": numeroControlePNCP,
-                    "pncp_web_url": pncp_web_url
-                }), 500
-            else:
-                return jsonify({
-                    "error": "Dados inválidos",
-                    "message": f"A API do PNCP retornou uma resposta inválida para a licitação {numeroControlePNCP}.",
-                    "numeroControlePNCP": numeroControlePNCP,
-                    "pncp_web_url": pncp_web_url,
-                    "response_preview": response.text[:200]  # First 200 chars for debugging
-                }), 500
-        
-        # Add the PNCP web URL to the response data
-        if isinstance(json_data, dict):
-            json_data['pncp_web_url'] = pncp_web_url
-        elif isinstance(json_data, list) and len(json_data) > 0 and isinstance(json_data[0], dict):
-            json_data[0]['pncp_web_url'] = pncp_web_url
-        
-        return jsonify(json_data), response.status_code
-    except requests.exceptions.Timeout:
-        return jsonify({"error": "Request timeout"}), 504
-    except requests.exceptions.ConnectionError as e:
-        logger.error(f"Connection error in get_tender_details: {str(e)}")
-        return jsonify({"error": "Erro de conexão", "message": str(e)}), 502
+        return jsonify(response_data), 200
     except Exception as e:
         logger.error(f"Error in get_tender_details: {str(e)}")
         return jsonify({"error": str(e)}), 500
