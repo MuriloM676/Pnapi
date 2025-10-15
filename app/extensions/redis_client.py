@@ -118,6 +118,32 @@ class RedisClient:
         except Exception as e:
             logger.error(f"Error flushing cache: {e}")
             return False
+    
+    def ping(self) -> bool:
+        """Test Redis connection."""
+        if not self.redis_client:
+            return False
+            
+        try:
+            return self.redis_client.ping()
+        except Exception as e:
+            logger.error(f"Error pinging Redis: {e}")
+            return False
+    
+    def info(self) -> dict:
+        """Get Redis server information."""
+        if not self.redis_client:
+            return {}
+            
+        try:
+            return self.redis_client.info()
+        except Exception as e:
+            logger.error(f"Error getting Redis info: {e}")
+            return {}
+    
+    def is_connected(self) -> bool:
+        """Check if Redis is connected and available."""
+        return self.redis_client is not None and self.ping()
 
 
 # Create global Redis client instance
